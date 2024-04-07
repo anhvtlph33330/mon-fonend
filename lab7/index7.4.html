@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="Prods.js"></script>
+</head>
+
+<body ng-app="myApp">
+    <div class="container" ng-controller="myCtrl">
+        <div class="card">
+            <div class="card-header">
+                <span>DANH SÁCH HÀNG HÓA</span>
+            </div>
+            <div>
+                <table class="table border table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-uppercase"><a href="#" ng-click="sortBy('name')">Sản phẩm</a></th>
+                            <th class="text-uppercase"><a href="#" ng-click="sortBy('price')">Đơn Giá</a></th>
+                            <th class="text-uppercase"><a href="#" ng-click="sortBy('discount')">Giảm giá</a></th>
+                            <th class="text-uppercase"><a href="#" ng-click="sortBy('date')">Ngày</a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="product in listProduct| orderBy:prop|limitTo:pageSize:begin">
+                            <td class="text-uppercase">{{product.name}}</td>
+                            <td>{{product.price|currency}}</td>
+                            <td>{{product.discount|percentage:2}}</td>
+                            <td>{{product.date|date:"MMMM-dd, yyyy"}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-center">
+                <button class="btn btn-primary" ng-click="first()">First</button>
+                <button class="btn btn-info" ng-click="prev()">Prev</button>
+                <button class="btn btn-info" ng-click="next()">Next</button>
+                <button class="btn btn-primary" ng-click="last()">Last</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var app = angular.module("myApp", []);
+        app.controller("myCtrl", function ($scope, $http) {
+            $scope.listProduct = list;
+            $scope.prop = "name";
+            $scope.sortBy = function (prop) {
+                $scope.prop = prop;
+            }
+            $scope.begin = 0;
+            $scope.pageSize = 8;
+            $scope.pageCount = Math.ceil($scope.listProduct.length / $scope.pageSize);
+            $scope.last = function () {
+                $scope.begin = ($scope.pageCount - 1) * $scope.pageSize;
+            };
+            $scope.first = function () {
+                $scope.begin = 0;
+            };
+            $scope.next = function () {
+                if ($scope.begin < ($scope.pageCount - 1) * $scope.pageSize) {
+                    $scope.begin += $scope.pageSize;
+                }
+            }
+            $scope.prev = function () {
+                if ($scope.begin >= $scope.pageSize) {
+                    $scope.begin -= $scope.pageSize;
+                }
+            };
+        });
+        app.filter('percentage', function ($filter) {
+            return function (input, decimals) {
+                return $filter('number')(input * 100, decimals) + '%';
+            };
+        })
+    </script>
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
